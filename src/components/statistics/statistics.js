@@ -3,9 +3,13 @@ import "./statistics.css";
 
 function Statistics(props) {
     const { all, done, imp, onClickElement } = props;
-    let barStyle = {paddingLeft: ""};
+    let barStyle = {width: ""};
 
-    barStyle.paddingLeft = (Number(done) * 100) / Number(all) + "%";
+    barStyle.width = Math.floor((Number(done) * 100) / Number(all)) + "%";
+
+    if(barStyle.width === "NaN%") {
+        barStyle.width = "";
+    }
 
     return (
         <section>
@@ -37,7 +41,10 @@ function Statistics(props) {
                     aria-valuenow={ done }
                     aria-valuemin="0"
                     aria-valuemax={ all }
-                    style={ barStyle } />
+                    style={ barStyle }>
+                    
+                    { barStyle.width }
+                </div>
             </div>
         </section>
     );
