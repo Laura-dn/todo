@@ -46,8 +46,8 @@ export default class App extends Component {
         const accessType = type === "read" ? "readonly" : "readwrite";
 
         req.onsuccess = () => {
-            const trans = req.result.transaction("tasks", accessType);
-            const tasks = trans.objectStore("tasks");
+            const trans = req.result.transaction("tasks", accessType),
+                  tasks = trans.objectStore("tasks");
 
             switch (type) {
                 case "create":
@@ -123,7 +123,7 @@ export default class App extends Component {
                 listData = listData.filter(el => el.isImportant === true);
                 break;
             case "ALLTASKS":
-                this.crud("read", id);
+                this.crud("read");
                 break;
             default:
                 console.log("ERROR");

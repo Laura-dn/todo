@@ -11,13 +11,13 @@ function Statistics(props) {
     <section>
       <p className="text-right">
         <span
-          className="badge badge-success statisticsDone"
+          className="badge badge-success"
           onClick={() => onClickElement("ONLYDONE")}
         >
           DONE: {done}
         </span>
         <span
-          className="badge ml-1 badge-primary statisticsImportant"
+          className="badge ml-1 badge-primary"
           onClick={() => onClickElement("ONLYIMPORTANT")}
         >
           IMP: {imp}
