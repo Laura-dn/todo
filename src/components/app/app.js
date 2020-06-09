@@ -28,13 +28,23 @@ export default class App extends Component {
         };
     }
 
-    //Вычитываем БД и обновляем  state
-    stateInit(trans) {
+    //Вычитываем БД и обновляем state
+    stateInit(trans, data) {
         trans.onsuccess = ev => {
-            const listData = ev.target.result;
-            const maxId = listData.reduce((max, { id }) => {
-                return max > id ? max : id;
-            }, 0);
+            let listData = ev.target.result,  //Вытягиваем все
+                maxId;
+
+            switch(data) {
+                case "ONLYDONE":
+                    listData = listData.filter(el => el.isDone === true); //Оставляем только выполненные
+                    break;
+                case "ONLYIMPORTANT":
+                    listData = listData.filter(el => el.isImportant === true);  //Оставляем только важные
+                    break;
+                default:
+                    maxId = listData.reduce ((max, { id }) => {return max > id ? max : id;}, 0);
+                    break;
+            }
 
             this.setState({ listData, maxId });
         };
@@ -55,7 +65,7 @@ export default class App extends Component {
                     break;
                 case "read":
                     const transactionRead = tasks.getAll();
-                    this.stateInit(transactionRead);
+                    this.stateInit(transactionRead, data);
                     break;
                 case "update":
                     tasks.put(data);
@@ -115,12 +125,10 @@ export default class App extends Component {
                 this.crud("delete", id);
                 break;
             case "ONLYDONE":
-                // this.crud("read", id);
-                listData = listData.filter(el => el.isDone === true);
+                this.crud("read", flag);
                 break;
             case "ONLYIMPORTANT":
-                // this.crud("read", id);
-                listData = listData.filter(el => el.isImportant === true);
+                this.crud("read", flag);
                 break;
             case "ALLTASKS":
                 this.crud("read");
