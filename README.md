@@ -2,8 +2,8 @@
 React ToDo
 
 + App
-    + ToDoList
-        + ListItem
     + Statistics
     + TaskForm
-    
+    + ToDoList
+        + ListItem
+    + ClearList

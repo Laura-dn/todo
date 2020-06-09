@@ -32,8 +32,7 @@ export default class App extends Component {
     //Вычитываем БД и обновляем state
     stateInit(trans, data) {
         trans.onsuccess = ev => {
-            let listData = ev.target.result,  //Вытягиваем все
-                maxId;
+            let listData = ev.target.result;  //Вытягиваем все
 
             switch(data) {
                 case "ONLYDONE":
@@ -43,15 +42,16 @@ export default class App extends Component {
                     listData = listData.filter(el => el.isImportant === true);  //Оставляем только важные
                     break;
                 default:
-                    maxId = listData.reduce ((max, { id }) => {return max > id ? max : id;}, 0);
+                    let maxId = listData.reduce ((max, { id }) => {return max > id ? max : id;}, 0);
+                    this.setState({ maxId });
                     break;
             }
 
-            this.setState({ listData, maxId });
+            this.setState({ listData });
         };
     }
 
-    //Контроллер на создание/чтение/обновление/удаление в БД
+    //Контроллер на создание/чтение/обновление/удаление в БД (и удалить все)
     crud(type, data) {
         const req = window.indexedDB.open("listBank", 1);
         const accessType = type === "read" ? "readonly" : "readwrite";
@@ -66,8 +66,7 @@ export default class App extends Component {
                     break;
                 }
                 case "read": {
-                    let transactionRead = tasks.getAll();
-                    this.stateInit(transactionRead, data);
+                    this.stateInit(tasks.getAll(), data);
                     break;
                 }
                 case "update": {
@@ -78,10 +77,9 @@ export default class App extends Component {
                     tasks.delete(data);
                     break;
                 }
-                case "delAll": {
+                case "DELALL": {
                     tasks.clear();
-                    let transactionRead = tasks.getAll();
-                    this.stateInit(transactionRead)
+                    this.stateInit(tasks.getAll())
                     break;
                 }
                 default: {
@@ -146,7 +144,7 @@ export default class App extends Component {
                 this.crud("read");
                 break;
             case "DELALL":
-                this.crud("delAll");
+                this.crud(flag);
                 break;
             default:
                 console.log("ERROR");
