@@ -1,4 +1,7 @@
-.done {text-decoration: line-through;}
+.done {
+    text-decoration: line-through;
+    background-color: rgb(240, 240, 240);
+}
 .important {
     font-style: italic;
     font-weight: bold;
