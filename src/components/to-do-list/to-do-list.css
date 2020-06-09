@@ -1,0 +1,7 @@
+.done {text-decoration: line-through;}
+.important {
+    font-weight: 800;
+    color: #ffc107;
+    text-shadow: black 1px 1px 0, black -1px -1px 0, 
+                 black -1px 1px 0, black 1px -1px 0;
+}
