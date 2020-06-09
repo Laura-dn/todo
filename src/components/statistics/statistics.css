@@ -1,4 +1,4 @@
+.statisticsDone,
 .statisticsImportant {
-    background-color: #ffc107;
-    border: 1px solid #ffc107;
+  cursor: pointer;
 }

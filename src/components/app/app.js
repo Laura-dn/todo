@@ -1,104 +1,165 @@
-import React, { Component } from 'react';
-import ToDoList from '../to-do-list';
-import Statistics from '../statistics';
-import TaskForm from '../task-form';
+import React, { Component } from "react";
+import ToDoList from "../to-do-list";
+import Statistics from "../statistics";
+import TaskForm from "../task-form";
 
-import './app.css';
+import "./app.css";
 
 export default class App extends Component {
-    state = {
-        maxId: 4,
-        listData: [
-            {
-                id: 1,
-                task: "Listen a music",
-                isDone: false,
-                isImportant: false
-            },
-            {
-                id: 2,
-                task: "Have a dinner",
-                isDone: true,
-                isImportant: false
-            },
-            {
-                id: 3,
-                task: "Look a new film",
-                isDone: false,
-                isImportant: true
-            },
-            {
-                id: 4,
-                task: "Clean in the floor",
-                isDone: true,
-                isImportant: true
-            }
-        ]
+  state = {
+    maxId: 0,
+    listData: []
+  };
+
+  constructor(props) {
+    super(props);
+    this.dbFirstInit(); //Инициализируем первый вход в БД
+    this.crud("read"); //Вычитываем значения с БД
+  }
+
+  //Первая инициализация БД
+  dbFirstInit() {
+    const req = window.indexedDB.open("listBank", 1);
+
+    req.onupgradeneeded = ev => {
+      ev.target.result.createObjectStore("tasks", {
+        keyPath: "id"
+      });
+    };
+  }
+
+  //Вычитываем БД и обновляем  state
+  stateInit(trans) {
+    trans.onsuccess = ev => {
+      const listData = ev.target.result;
+      const maxId = listData.reduce((max, { id }) => {
+        return max > id ? max : id;
+      }, 0);
+
+      this.setState({ listData, maxId });
+    };
+  }
+
+  //Контроллер на создание/чтение/обновление/удаление в БД
+  crud(type, data) {
+    const req = window.indexedDB.open("listBank", 1);
+    const accessType = type === "read" ? "readonly" : "readwrite";
+
+    req.onsuccess = () => {
+      const trans = req.result.transaction("tasks", accessType);
+      const tasks = trans.objectStore("tasks");
+
+      switch (type) {
+        case "create":
+          tasks.add(data);
+          break;
+        case "read":
+          const transactionRead = tasks.getAll();
+          this.stateInit(transactionRead);
+          break;
+        case "update":
+          tasks.put(data);
+          break;
+        case "delete":
+          tasks.delete(data);
+          break;
+        default:
+          console.log("ERROR");
+          break;
+      }
+    };
+  }
+
+  //Генератор новой Записи в Списке
+  generateItem(task) {
+    const id = this.state.maxId + 1;
+    this.setState({ maxId: id });
+
+    return {
+      id,
+      task: task,
+      isDone: false,
+      isImportant: false
+    };
+  }
+
+  //Контролер на Клик по flag
+  onClickElement = (flag, id, value) => {
+    let listData = [...this.state.listData];
+
+    switch (flag) {
+      case "DONE":
+        listData.forEach(el => {
+          if (el.id === id) {
+            el.isDone = !el.isDone;
+            this.crud("update", el);
+          }
+        });
+        break;
+      case "IMPORTANT":
+        listData.forEach(el => {
+          if (el.id === id) {
+            el.isImportant = !el.isImportant;
+            this.crud("update", el);
+          }
+        });
+        break;
+      case "ADD":
+        const item = this.generateItem(value);
+
+        listData.push(item);
+        this.crud("create", item);
+        break;
+      case "DEL":
+        listData = listData.filter(el => el.id !== id);
+        this.crud("delete", id);
+        break;
+      case "ONLYDONE":
+        // this.crud("read", id);
+        listData = listData.filter(el => el.isDone === true);
+        break;
+      case "ONLYIMPORTANT":
+        // this.crud("read", id);
+        listData = listData.filter(el => el.isImportant === true);
+        break;
+      case "ALLTASKS":
+        this.crud("read", id);
+        break;
+      default:
+        console.log("ERROR");
+        break;
     }
 
-    onClickElement = (id, flag, value) => {
-        let listData = [...this.state.listData];
+    this.setState({ listData });
+  };
 
-        switch(flag) {
-            case "DONE":
-                listData.forEach(el => {
-                    if(el.id === id) {
-                        el.isDone = !el.isDone;
-                    }
-                });
-                break;
-            case "IMPORTANT":
-                listData.forEach(el => {
-                    if(el.id === id) {
-                        el.isImportant = !el.isImportant;
-                    }
-                });
-                break;
-            case "ADD":
-                listData.unshift(this.generateItem(value));
-                break;
-            case "DEL":
-                listData = listData.filter(el => el.id !== id);
-                break;
-            default:
-                console.log("ERROR");
-                break;
-        }
+  render() {
+    let listLen = this.state.listData.length,
+      doneTasks = this.state.listData.reduce(
+        (counter, { isDone }) => (counter += isDone ? 1 : 0),
+        0
+      ),
+      importantTask = this.state.listData.reduce(
+        (counter, { isImportant }) => (counter += isImportant ? 1 : 0),
+        0
+      );
 
-        this.setState({ listData });
-    }
+    return (
+      <section className="app">
+        <Statistics
+          all={listLen}
+          done={doneTasks}
+          imp={importantTask}
+          onClickElement={this.onClickElement}
+        />
 
-    generateItem(task) {
-        const id = this.state.maxId + 1;
-        this.setState({ maxId: id });
+        <TaskForm onClickElement={this.onClickElement} />
 
-        return {
-            id,
-            task: task,
-            isDone: false,
-            isImportant: false
-        }
-    }
-    
-    render() {
-        let listLen = this.state.listData.length,
-            doneTasks = this.state.listData.reduce((counter, {isDone}) => counter += isDone ? 1 : 0, 0),
-            importantTask = this.state.listData.reduce((counter, {isImportant}) => counter += isImportant ? 1 : 0, 0);
-
-        return (
-            <section className="app">
-                <Statistics
-                    all={ listLen }
-                    done={ doneTasks }
-                    imp={ importantTask } />
-                
-                <TaskForm 
-                    onClickElement={ this.onClickElement }/>
-
-                <ToDoList 
-                    data={ this.state.listData }
-                    onClickElement={ this.onClickElement } />
-            </section>
-        );
-    }
+        <ToDoList
+          data={this.state.listData}
+          onClickElement={this.onClickElement}
+        />
+      </section>
+    );
+  }
 }
