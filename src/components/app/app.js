@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ToDoList from "../to-do-list";
 import Statistics from "../statistics";
 import TaskForm from "../task-form";
+import ClearList from "../clear-list";
 
 import "./app.css";
 
@@ -147,7 +148,7 @@ export default class App extends Component {
             importantTask = this.state.listData.reduce((counter, { isImportant }) => (counter += isImportant ? 1 : 0), 0);
 
         return (
-            <section className="app">
+            <section className="app text-center">
                 <Statistics
                     all={listLen}
                     done={doneTasks}
@@ -161,6 +162,8 @@ export default class App extends Component {
                     data={this.state.listData}
                     onClickElement={this.onClickElement}
                 />
+
+                <ClearList onClickElement={this.onClickElement} />
             </section>
         );
     }
