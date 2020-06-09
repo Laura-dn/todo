@@ -3,13 +3,22 @@ import "./statistics.css";
 
 function Statistics(props) {
     const { all, done, imp, onClickElement } = props;
-    let barStyle = {width: ""};
+    let progressBar = {width: ""},
+        classColorBar = "progress-bar progress-bar-striped progress-bar-animated bg-success";
 
-    barStyle.width = Math.floor((Number(done) * 100) / Number(all)) + "%";
+    progressBar.width = Math.floor((Number(done) * 100) / Number(all)) + "%";
 
-    if(barStyle.width === "NaN%") {
-        barStyle.width = "";
+    if(progressBar.width === "NaN%") {
+        progressBar.width = "";
     }
+
+    // function colorBar(color) {
+    //     if(color === "ONLYIMPORTANT") {
+    //         classColorBar += " bg-primary";
+    //     } else {
+    //         classColorBar += " bg-success";
+    //     }
+    // }
 
     return (
         <section>
@@ -36,14 +45,14 @@ function Statistics(props) {
 
             <div className="progress mb-3">
                 <div
-                    className="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                    className={ classColorBar }
                     role="progressbar"
                     aria-valuenow={ done }
                     aria-valuemin="0"
                     aria-valuemax={ all }
-                    style={ barStyle }>
+                    style={ progressBar }>
                     
-                    { barStyle.width }
+                    { progressBar.width }
                 </div>
             </div>
         </section>

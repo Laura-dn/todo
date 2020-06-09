@@ -5,6 +5,7 @@ import "./clear-list.css";
 function ClearList(props) {
     const { onClickElement } = props;
 
+    //Возвращаем кнопку "Удалить все"
     return (
         <button 
             type="button" 
