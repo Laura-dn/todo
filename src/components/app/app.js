@@ -61,29 +61,33 @@ export default class App extends Component {
                   tasks = trans.objectStore("tasks");
 
             switch (type) {
-                case "create":
+                case "create": {
                     tasks.add(data);
                     break;
+                }
                 case "read": {
                     let transactionRead = tasks.getAll();
                     this.stateInit(transactionRead, data);
                     break;
                 }
-                case "update":
+                case "update": {
                     tasks.put(data);
                     break;
-                case "delete":
+                }
+                case "delete": {
                     tasks.delete(data);
                     break;
+                }
                 case "delAll": {
                     tasks.clear();
                     let transactionRead = tasks.getAll();
                     this.stateInit(transactionRead)
                     break;
                 }
-                default:
+                default: {
                     console.log("ERROR");
                     break;
+                }
             }
         };
     }
@@ -123,7 +127,7 @@ export default class App extends Component {
                 });
                 break;
             case "ADD":
-                const item = this.generateItem(value);
+                let item = this.generateItem(value);
 
                 listData.push(item);
                 this.crud("create", item);
@@ -160,20 +164,20 @@ export default class App extends Component {
         return (
             <section className="app text-center">
                 <Statistics
-                    all={listLen}
-                    done={doneTasks}
-                    imp={importantTask}
-                    onClickElement={this.onClickElement}
+                    all={ listLen }
+                    done={ doneTasks }
+                    imp={ importantTask }
+                    onClickElement={ this.onClickElement }
                 />
 
-                <TaskForm onClickElement={this.onClickElement} />
+                <TaskForm onClickElement={ this.onClickElement } />
 
                 <ToDoList
-                    data={this.state.listData}
-                    onClickElement={this.onClickElement}
+                    data={ this.state.listData }
+                    onClickElement={ this.onClickElement }
                 />
 
-                <ClearList onClickElement={this.onClickElement} />
+                <ClearList onClickElement={ this.onClickElement } />
             </section>
         );
     }
