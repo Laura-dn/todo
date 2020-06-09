@@ -11,7 +11,7 @@ function ListItem(props) {
 
   return (
     <li className={classes}>
-      <span className="container-sm" onClick={() => onClickElement("DONE", id)}>
+      <span className="container-sm text-left" onClick={() => onClickElement("DONE", id)}>
         {task}
       </span>
 

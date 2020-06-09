@@ -64,16 +64,23 @@ export default class App extends Component {
                 case "create":
                     tasks.add(data);
                     break;
-                case "read":
-                    const transactionRead = tasks.getAll();
+                case "read": {
+                    let transactionRead = tasks.getAll();
                     this.stateInit(transactionRead, data);
                     break;
+                }
                 case "update":
                     tasks.put(data);
                     break;
                 case "delete":
                     tasks.delete(data);
                     break;
+                case "delAll": {
+                    tasks.clear();
+                    let transactionRead = tasks.getAll();
+                    this.stateInit(transactionRead)
+                    break;
+                }
                 default:
                     console.log("ERROR");
                     break;
@@ -133,6 +140,9 @@ export default class App extends Component {
                 break;
             case "ALLTASKS":
                 this.crud("read");
+                break;
+            case "DELALL":
+                this.crud("delAll");
                 break;
             default:
                 console.log("ERROR");
