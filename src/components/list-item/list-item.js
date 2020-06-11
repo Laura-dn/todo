@@ -4,7 +4,7 @@ import "./list-item.css";
 function ListItem(props) {
     const { id, task, isDone, isImportant, onClickElement } = props;
     let classes = "list-group-item d-flex align-items-center justify-content-between"; //Классы Задачи по умолчанию
-    const singImp = <i class="fa fa-star" aria-hidden="true"></i>;
+    const singImp = <i className="fa fa-star" aria-hidden="true"></i>;
 
     //Добавляем класс, если выполнено Задание
     classes += isDone ? " done" : "";

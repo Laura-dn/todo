@@ -131,6 +131,7 @@ export default class App extends Component {
                 break;
             case "DELALL":
                 this.crud(flag);
+                listData = [];
                 break;
             default:
                 console.log("ERROR");
@@ -165,6 +166,7 @@ export default class App extends Component {
             all,
             done,
             imp,
+            filter: this.state.filter,
             onClickElement: this.onClickElement
         };
     }
@@ -174,7 +176,7 @@ export default class App extends Component {
             filteredTasks = this.filter();
 
         return (
-            <section className="app text-center">
+            <section className="app text-center p-3">
                 <Statistics { ...statistics } />
 
                 <TaskForm onClickElement={ this.onClickElement } />

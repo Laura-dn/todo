@@ -2,23 +2,21 @@ import React from "react";
 import "./statistics.css";
 
 function Statistics(props) {
-    const { all, done, imp, onClickElement } = props;
+    const { all, done, imp, filter, onClickElement } = props;
     let progressBar = {width: ""},
-        classColorBar = "progress-bar progress-bar-striped progress-bar-animated bg-success";
+        classColorBar = "progress-bar progress-bar-striped progress-bar-animated";
 
-    progressBar.width = Math.floor((Number(done) * 100) / Number(all)) + "%";
+    if(filter === "ONLYIMPORTANT") {
+        classColorBar += classColorBar + " bg-primery";
+        progressBar.width = Math.floor((Number(imp) * 100) / Number(all)) + "%";
+    } else {
+        classColorBar += classColorBar + " bg-success";
+        progressBar.width = Math.floor((Number(done) * 100) / Number(all)) + "%";
+    }
 
     if(progressBar.width === "NaN%") {
         progressBar.width = "";
     }
-
-    // function colorBar(color) {
-    //     if(color === "ONLYIMPORTANT") {
-    //         classColorBar += " bg-primary";
-    //     } else {
-    //         classColorBar += " bg-success";
-    //     }
-    // }
 
     return (
         <section>
