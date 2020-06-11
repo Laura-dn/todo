@@ -8,13 +8,10 @@ function ToDoList(props) {
 
     return (
         <ul className="list-group">
-            {data.map(({ id, task, isDone, isImportant }) => (
+            {data.map((task) => (
                 <ListItem
-                    key={ id }
-                    id={ id }
-                    task={ task }
-                    isDone={ isDone }
-                    isImportant={ isImportant }
+                    key={ task.id }
+                    { ...task }
                     onClickElement={ onClickElement } />
             ))}
         </ul>

@@ -9,7 +9,8 @@ import "./app.css";
 export default class App extends Component {
     state = {
         maxId: 0,
-        listData: []
+        listData: [],
+        filter: "ALLTASKS"
     };
 
     constructor(props) {
@@ -34,19 +35,6 @@ export default class App extends Component {
         trans.onsuccess = ev => {
             let listData = ev.target.result,  //Вытягиваем все
                 maxId = listData.reduce ((max, { id }) => {return max > id ? max : id;}, 0);
-
-            // switch(data) {
-            //     case "ONLYDONE":
-            //         listData = listData.filter(el => el.isDone === true); //Оставляем только выполненные
-            //         break;
-            //     case "ONLYIMPORTANT":
-            //         listData = listData.filter(el => el.isImportant === true);  //Оставляем только важные
-            //         break;
-            //     default:
-                    
-            //         this.setState({ maxId });
-            //         break;
-            // }
 
             this.setState({ listData, maxId });
         };
@@ -138,14 +126,8 @@ export default class App extends Component {
                 listData = listData.filter(el => el.id !== id);
                 this.crud("delete", id);
                 break;
-            case "ONLYDONE":
-                this.crud("read", flag);
-                break;
-            case "ONLYIMPORTANT":
-                this.crud("read", flag);
-                break;
-            case "ALLTASKS":
-                this.crud("read");
+            case "FILTER":
+                this.setState({ filter: value });
                 break;
             case "DELALL":
                 this.crud(flag);
@@ -158,30 +140,48 @@ export default class App extends Component {
         this.setState({ listData });
     };
 
-    getStatistics() {
+    filter() {
+        let listData = [...this.state.listData];
 
+        switch(this.state.filter) {
+            case "ONLYDONE":
+                return listData.filter(el => el.isDone === true); //Оставляем только выполненные
+            case "ONLYIMPORTANT":
+                return listData.filter(el => el.isImportant === true);  //Оставляем только важные
+            case "ALLTASKS":
+                return listData;
+            default:
+                console.log("ERROR");
+                break;
+        }
+    }
+
+    getStatistics() {
+        let all = this.state.listData.length;
+        let done = this.state.listData.reduce((counter, { isDone }) => (counter += isDone ? 1 : 0), 0);
+        let imp = this.state.listData.reduce((counter, { isImportant }) => (counter += isImportant ? 1 : 0), 0);
+        
+        return {
+            all,
+            done,
+            imp,
+            onClickElement: this.onClickElement
+        };
     }
 
     render() {
-        let listLen = this.state.listData.length,
-            doneTasks = this.state.listData.reduce((counter, { isDone }) => (counter += isDone ? 1 : 0), 0),
-            importantTask = this.state.listData.reduce((counter, { isImportant }) => (counter += isImportant ? 1 : 0), 0);
+        let statistics = this.getStatistics(),
+            filteredTasks = this.filter();
 
         return (
             <section className="app text-center">
-                <Statistics
-                    all={ listLen }
-                    done={ doneTasks }
-                    imp={ importantTask }
-                    onClickElement={ this.onClickElement }
-                />
+                <Statistics { ...statistics } />
 
                 <TaskForm onClickElement={ this.onClickElement } />
 
                 <ToDoList
-                    data={ this.state.listData }
-                    onClickElement={ this.onClickElement }
-                />
+                    data={ filteredTasks }
+                    onClickElement={ this.onClickElement } />
 
                 <ClearList onClickElement={ this.onClickElement } />
             </section>

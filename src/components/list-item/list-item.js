@@ -3,7 +3,8 @@ import "./list-item.css";
 
 function ListItem(props) {
     const { id, task, isDone, isImportant, onClickElement } = props;
-    let classes = "list-group-item d-flex align-items-center justify-content-between pointer"; //Классы Задачи по умолчанию
+    let classes = "list-group-item d-flex align-items-center justify-content-between"; //Классы Задачи по умолчанию
+    const singImp = <i class="fa fa-star" aria-hidden="true"></i>;
 
     //Добавляем класс, если выполнено Задание
     classes += isDone ? " done" : "";
@@ -14,6 +15,8 @@ function ListItem(props) {
     return (
         <li className={ classes }>
             <span className="container-sm text-left" onClick={ () => onClickElement("DONE", id) }>
+                { isImportant ? singImp : "" }
+                &nbsp;
                 { task }
             </span>
 

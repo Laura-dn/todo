@@ -25,19 +25,19 @@ function Statistics(props) {
             <p className="text-right">
                 <span
                     className="badge badge-success"
-                    onClick={ () => onClickElement("ONLYDONE") }>
+                    onClick={ () => onClickElement("FILTER", null, "ONLYDONE") }>
 
                     DONE: { done }
                 </span>
                 <span
                     className="badge ml-1 badge-primary"
-                    onClick={ () => onClickElement("ONLYIMPORTANT") }>
+                    onClick={ () => onClickElement("FILTER", null, "ONLYIMPORTANT") }>
                     
                     IMP: { imp }
                 </span>
                 <span
                     className="badge badge-dark ml-1"
-                    onClick={ () => onClickElement("ALLTASKS") }>
+                    onClick={ () => onClickElement("FILTER", null, "ALLTASKS") }>
                     
                     ALL: { all }
                 </span>
