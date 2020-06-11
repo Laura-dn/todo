@@ -29,25 +29,26 @@ export default class App extends Component {
         };
     }
 
-    //Вычитываем БД и обновляем state
+    //Вычитываем БД
     stateInit(trans, data) {
         trans.onsuccess = ev => {
-            let listData = ev.target.result;  //Вытягиваем все
+            let listData = ev.target.result,  //Вытягиваем все
+                maxId = listData.reduce ((max, { id }) => {return max > id ? max : id;}, 0);
 
-            switch(data) {
-                case "ONLYDONE":
-                    listData = listData.filter(el => el.isDone === true); //Оставляем только выполненные
-                    break;
-                case "ONLYIMPORTANT":
-                    listData = listData.filter(el => el.isImportant === true);  //Оставляем только важные
-                    break;
-                default:
-                    let maxId = listData.reduce ((max, { id }) => {return max > id ? max : id;}, 0);
-                    this.setState({ maxId });
-                    break;
-            }
+            // switch(data) {
+            //     case "ONLYDONE":
+            //         listData = listData.filter(el => el.isDone === true); //Оставляем только выполненные
+            //         break;
+            //     case "ONLYIMPORTANT":
+            //         listData = listData.filter(el => el.isImportant === true);  //Оставляем только важные
+            //         break;
+            //     default:
+                    
+            //         this.setState({ maxId });
+            //         break;
+            // }
 
-            this.setState({ listData });
+            this.setState({ listData, maxId });
         };
     }
 
@@ -66,7 +67,7 @@ export default class App extends Component {
                     break;
                 }
                 case "read": {
-                    this.stateInit(tasks.getAll(), data);
+                    this.stateInit(tasks.getAll());
                     break;
                 }
                 case "update": {
@@ -79,7 +80,6 @@ export default class App extends Component {
                 }
                 case "DELALL": {
                     tasks.clear();
-                    this.stateInit(tasks.getAll())
                     break;
                 }
                 default: {
@@ -92,15 +92,19 @@ export default class App extends Component {
 
     //Генератор новой Записи в Списке
     generateItem(task) {
-      const id = this.state.maxId + 1;
-      this.setState({ maxId: id });
+        if(task.length === 0) {
+            task = "New task";
+        }
 
-      return {
-          id,
-          task: task,
-          isDone: false,
-          isImportant: false
-      };
+        const id = this.state.maxId + 1;
+        this.setState({ maxId: id });
+
+        return {
+            id,
+            task: task,
+            isDone: false,
+            isImportant: false
+        };
     }
 
     //Контроллер на Клик по flag
@@ -153,6 +157,10 @@ export default class App extends Component {
 
         this.setState({ listData });
     };
+
+    getStatistics() {
+
+    }
 
     render() {
         let listLen = this.state.listData.length,

@@ -24,14 +24,14 @@ export default class TaskForm extends Component
                     type="text"
                     className="form-control"
                     placeholder="Задача"
-                    onChange={ this.inputChange } />
+                    onChange={ this.inputChange }
+                    value={ this.state.input } />
             
                 <div className="input-group-append">
                     <button
                         className="btn btn-outline-secondary bg-info text-white"
                         type="button"
                         onClick={ this.onClickElement }>
-                        
                         Добавить
                     </button>
                 </div>
