@@ -13,8 +13,8 @@ function ListItem(props) {
 
     //Возвращаем Задание в Список
     return (
-        <li className={ classes }>
-            <span className="container-sm text-left" onClick={ () => onClickElement("DONE", id) }>
+        <li className={ classes } role="button">
+            <span className="container text-left" onClick={ () => onClickElement("DONE", id) }>
                 { isImportant ? singImp : "" }
                 &nbsp;
                 { task }

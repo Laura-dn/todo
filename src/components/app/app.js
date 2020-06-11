@@ -3,6 +3,7 @@ import ToDoList from "../to-do-list";
 import Statistics from "../statistics";
 import TaskForm from "../task-form";
 import ClearList from "../clear-list";
+import SearchForm from "../search-form";
 
 import "./app.css";
 
@@ -10,7 +11,8 @@ export default class App extends Component {
     state = {
         maxId: 0,
         listData: [],
-        filter: "ALLTASKS"
+        filter: "ALLTASKS",
+        search: ""
     };
 
     constructor(props) {
@@ -50,30 +52,24 @@ export default class App extends Component {
                   tasks = trans.objectStore("tasks");
 
             switch (type) {
-                case "create": {
+                case "create":
                     tasks.add(data);
                     break;
-                }
-                case "read": {
+                case "read":
                     this.stateInit(tasks.getAll());
                     break;
-                }
-                case "update": {
+                case "update":
                     tasks.put(data);
                     break;
-                }
-                case "delete": {
+                case "delete":
                     tasks.delete(data);
                     break;
-                }
-                case "DELALL": {
+                case "DELALL":
                     tasks.clear();
                     break;
-                }
-                default: {
+                default:
                     console.log("ERROR");
                     break;
-                }
             }
         };
     }
@@ -96,7 +92,7 @@ export default class App extends Component {
     }
 
     //Контроллер на Клик по flag
-    onClickElement = (flag, id, value) => {
+    onClickElement = (flag, id, data) => {
         let listData = [...this.state.listData];
 
         switch (flag) {
@@ -117,8 +113,7 @@ export default class App extends Component {
                 });
                 break;
             case "ADD":
-                let item = this.generateItem(value);
-
+                let item = this.generateItem(data);
                 listData.push(item);
                 this.crud("create", item);
                 break;
@@ -127,11 +122,14 @@ export default class App extends Component {
                 this.crud("delete", id);
                 break;
             case "FILTER":
-                this.setState({ filter: value });
+                this.setState({ filter: data });
                 break;
             case "DELALL":
                 this.crud(flag);
                 listData = [];
+                break;
+            case "SEARCH":
+                this.setState({ search: data.target.value });
                 break;
             default:
                 console.log("ERROR");
@@ -171,18 +169,30 @@ export default class App extends Component {
         };
     }
 
+    search(list) {
+        if(this.state.search === "") {
+            return list;
+        }
+
+        let regS = new RegExp(this.state.search, "i");
+        
+        return list.filter(({ task }) => {return regS.test(task);});
+    }
+
     render() {
-        let statistics = this.getStatistics(),
-            filteredTasks = this.filter();
+        let statistics = this.getStatistics();
+        let searchingArr = this.search(this.filter());
 
         return (
             <section className="app text-center p-3">
+                <SearchForm onClickElement={ this.onClickElement} />
+
                 <Statistics { ...statistics } />
 
                 <TaskForm onClickElement={ this.onClickElement } />
 
                 <ToDoList
-                    data={ filteredTasks }
+                    data={ searchingArr }
                     onClickElement={ this.onClickElement } />
 
                 <ClearList onClickElement={ this.onClickElement } />

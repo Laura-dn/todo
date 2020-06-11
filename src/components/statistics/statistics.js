@@ -22,20 +22,23 @@ function Statistics(props) {
         <section>
             <p className="text-right">
                 <span
-                    className="badge badge-success"
-                    onClick={ () => onClickElement("FILTER", null, "ONLYDONE") }>
+                    className={ `badge badge-success ${(filter === "ONLYDONE") ? "btnOn" : ""}`}
+                    onClick={ () => onClickElement("FILTER", null, "ONLYDONE") }
+                    role="button">
 
                     DONE: { done }
                 </span>
                 <span
-                    className="badge ml-1 badge-primary"
-                    onClick={ () => onClickElement("FILTER", null, "ONLYIMPORTANT") }>
+                    className={`badge badge-primary ml-1 ${(filter === "ONLYIMPORTANT") ? "btnOn" : ""}`}
+                    onClick={ () => onClickElement("FILTER", null, "ONLYIMPORTANT") }
+                    role="button">
                     
                     IMP: { imp }
                 </span>
                 <span
-                    className="badge badge-dark ml-1"
-                    onClick={ () => onClickElement("FILTER", null, "ALLTASKS") }>
+                    className={`badge badge-dark ml-1 ${(filter === "ALLTASKS") ? "btnOn" : ""}`}
+                    onClick={ () => onClickElement("FILTER", null, "ALLTASKS") }
+                    role="button">
                     
                     ALL: { all }
                 </span>
