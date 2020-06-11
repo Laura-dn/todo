@@ -1,34 +1,41 @@
-import React from "react";
+import React, { Component } from "react";
 
 import "./task-form.css";
 
-function TaskForm(props) {
-    const { onClickElement } = props;
-    let value = "New Task";
-
-    function inputChange(e) {
-        value = e.target.value;
+export default class TaskForm extends Component
+{
+    state = {
+        input: ""
     }
 
-    return (
-        <div className="input-group mb-3">
-            <input
-                type="text"
-                className="form-control"
-                placeholder="Задача"
-                onChange={ inputChange } />
-          
-            <div className="input-group-append">
-                <button
-                    className="btn btn-outline-secondary bg-info text-white"
-                    type="button"
-                    onClick={ () => onClickElement("ADD", null, value) }>
-                    
-                    Добавить
-                </button>
-            </div>
-        </div>
-    );
-}
+    onClickElement = () => {
+        this.props.onClickElement("ADD", null, this.state.input);
+        this.setState({ input: "" });
+    }
 
-export default TaskForm;
+    inputChange = (e) => {
+        this.setState({ input: e.target.value });
+    }
+
+    render() {
+        return (
+            <div className="input-group mb-3">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Задача"
+                    onChange={ this.inputChange } />
+            
+                <div className="input-group-append">
+                    <button
+                        className="btn btn-outline-secondary bg-info text-white"
+                        type="button"
+                        onClick={ this.onClickElement }>
+                        
+                        Добавить
+                    </button>
+                </div>
+            </div>
+        );
+    }
+}
